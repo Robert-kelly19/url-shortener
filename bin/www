@@ -7,6 +7,7 @@
 import app from '../app.js';
 import deb from 'debug';
 import http from 'http';
+import logger from '../utils/logger.js';
 
 const debug = deb('url-shortener:server');
 
@@ -51,6 +52,39 @@ function normalizePort(val) {
   return false;
 }
 
+const signals = {
+  'SIGHUP': 1,
+  'SIGINT': 2,
+  'SIGTERM': 15
+};
+
+let shuttingDown = false;
+
+const shutdown = (signal, value) => {
+  if (shuttingDown) {
+    logger.info(`Already shutting down. Received ${signal} again`);
+    return;
+  }
+  shuttingDown = true
+  logger.info(`Received ${signal}. Shutting down gracefully`)
+  server.close((err) => {
+    if (err) {
+      logger.error("Error closing server", err)
+      process.exit(1)
+    } else {
+      logger.info('server closed. Exiting the process.')
+      process.exit(0)
+    }
+  })
+}
+
+Object.keys(signals).forEach((signal) => {
+  process.on(signal, () => {
+    logger.info(`Recieved ${signal}`)
+    shutdown(signal, signals[signal])
+  })
+})
+
 /**
  * Event listener for HTTP server "error" event.
  */
@@ -67,11 +101,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      logger.error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      logger.error(bind + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -89,5 +123,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-  console.log(`server listening on : ${bind}`)
+  logger.debug(`server listening on : ${bind}`)
 }

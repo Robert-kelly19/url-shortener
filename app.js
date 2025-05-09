@@ -1,16 +1,20 @@
 import express from 'express';
 import path, { dirname } from 'path';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+import morgan from 'morgan';
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import { fileURLToPath} from 'url';
+import winstonLogger from './utils/logger.js'
+
+const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
+app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
 
-const app = express();
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
