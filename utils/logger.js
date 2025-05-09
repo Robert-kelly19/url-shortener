@@ -7,7 +7,7 @@ import winston from "winston";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename)
 
-const logDir = path.join(__dirname, "logs")
+const logDir = path.join(__dirname, "../logs")
 
 const {colorize, align,errors,json, combine, timestamp} =winston.format
 
