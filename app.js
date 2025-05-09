@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
+import authRouter from './routes/auth.js'
 import { fileURLToPath} from 'url';
 import winstonLogger from './utils/logger.js'
 
@@ -22,5 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 export default app;
