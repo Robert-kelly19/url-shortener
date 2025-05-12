@@ -20,7 +20,7 @@ export default async function resgisterHandler(req,res,next) {
 
         const insertUser = `INSERT INTO users(first_name,last_name,email,password)
                             VALUES($1,$2,$3,$4) RETURNING id;`
-        const newUserResult = await query(insertUser,[firstName,lastName,email,password])
+        const newUserResult = await query(insertUser,[firstName,lastName,email,passwordHash])
         const newuser = newUserResult.rows[0]
         logger.info(`successfully registered user: ${newuser.id}`)
 

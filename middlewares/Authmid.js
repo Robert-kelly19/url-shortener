@@ -1,31 +1,38 @@
 import jwt from "jsonwebtoken";
-import logger from "../utils/logger";
+import logger from "../utils/logger.js";
 
-const authMddleware =(req, res, next) => {
-    const authHeader = req.header("Authorization")
-    const token = authHeader && authHeader.startsWith('Bearer') ? authHeader.spli('')[1]: null;
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.header("Authorization");
 
-    if(!token){
-        logger.warn(`Auth middleweare: no token provider`)
-        return res.status(401).json({message:"no token, Authorization has been denied"})
+  const token = authHeader && authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : null;
+
+  if (!token) {
+    logger.warn("Auth middleware: No token provided");
+    return res.status(401).json({ message: "No token. Authorization denied." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded.user;
+    logger.debug(`Auth middleware: Token verified for user ID ${req.user.id}`);
+    next();
+  } catch (error) {
+    logger.error("Auth middleware: Token verification failed", error);
+
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Your token has expired" });
     }
 
-    try {
-        const decoded = jwt.verify(process.env.JTW.SECRET)
-        req.user = decoded.user
-        logger.debug(`Auth middleweare: token varified for user ID ${req.user.id}`)
-        next()
-    } catch (error) {
-        logger.error(`Auth middleweare: token verification failed`, err)
-        if(err.name === "TokenExpireError"){
-            return res.status(401).json({message: "your token has expired"})
-        }
-
-        if(error.name === "JsonWebTokenError"){
-            return res.status(401).json({message: "your token is invalid"})
-        }
-        return res.status(error.status || 501).json({message: error.message || "server error while verifing token"})
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Your token is invalid" });
     }
-}
 
-export default authMddleware
+    return res.status(500).json({
+      message: error.message || "Server error while verifying token",
+    });
+  }
+};
+
+export default authMiddleware;
