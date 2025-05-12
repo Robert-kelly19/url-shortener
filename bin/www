@@ -129,8 +129,8 @@ function onListening() {
 const startServer = async () => {
   try {
     logger.info(`Attempting to Start server on port ${port}`)
-    await connectToDb()
-    await initializeDbSchema()
+    // await connectToDb()
+    // await initializeDbSchema()
     logger.info(`Starting server on port ${port}`)
     server.listen(port, '0.0.0.0');
     server.on('error', onError);
