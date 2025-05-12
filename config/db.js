@@ -36,7 +36,7 @@ pool.on("error", (err, client) => {
   process.exit(-1);
 })
 
-const initialzeDbSchema = async () => {
+const initializeDbSchema = async () => {
     const client = await pool.connect()
     try {
         logger.info('initailing database schema...')
@@ -106,5 +106,5 @@ const connectToDb = async () => {
     }
   }
   
-  export { pool, connectToDb, query, initialzeDbSchema }
+  export { pool, connectToDb, query, initializeDbSchema }
     
