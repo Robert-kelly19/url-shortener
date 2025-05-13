@@ -5,12 +5,13 @@
  */
 
 import app from '../app.js';
+import dotenv from 'dotenv'
 import deb from 'debug';
 import http from 'http';
 import logger from '../utils/logger.js';
 import { connectToDb, initializeDbSchema } from '../config/db.js';
 let debug = deb('url-shortener:server');
-
+dotenv.config();
 /**
  * Get port from environment and store in Express.
  */
@@ -28,9 +29,9 @@ let server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// server.listen(port);
+// server.on('error', onError);
+// server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -126,20 +127,20 @@ function onListening() {
   logger.debug(`server listening on : ${bind}`)
 }
 
-// let startServer = async () => {
-//   try {
-//     logger.info(`Attempting to Start server on port ${port}`)
-//    await connectToDb()
-//    await initializeDbSchema()
-//     logger.info(`Starting server on port ${port}`)
-//     server.listen(port, '0.0.0.0');
-//     server.on('error', onError);
-//     server.on('listening', onListening);
-//   } catch (error) {
-//     logger.error('Failed during server startup process: ', error)
-//     console.error(error)
-//     process.exit(1)
-//   }
-// }
+let startServer = async () => {
+  try {
+    logger.info(`Attempting to Start server on port ${port}`)
+   await connectToDb()
+   await initializeDbSchema()
+    logger.info(`Starting server on port ${port}`)
+    server.listen(port, '0.0.0.0');
+    server.on('error', onError);
+    server.on('listening', onListening);
+  } catch (error) {
+    logger.error('Failed during server startup process: ', error)
+    console.error(error)
+    process.exit(1)
+  }
+}
 
-// startServer()
+startServer()
