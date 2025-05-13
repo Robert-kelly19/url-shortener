@@ -89,6 +89,7 @@ const connectToDb = async () => {
       client.release()
     } catch (error) {
       logger.error('Unable to establish database connection pool', error)
+      console.error(error)
       process.exit(1)
     }
   }
@@ -102,6 +103,7 @@ const connectToDb = async () => {
       return response
     } catch (error) {
       logger.error(`Error executing query: { text: ${text.substring(0, 100)}..., params: ${JSON.stringify(params)}, error: ${error.message}}`);
+      console.error(error)
       throw error
     }
   }
