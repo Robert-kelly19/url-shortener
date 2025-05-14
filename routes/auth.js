@@ -7,9 +7,9 @@ const router= express.Router()
 /**
  * @swagger
  *  title: url-shortener
-  version: 1.0.0
-  description: API url shortener for shortening of urls for a registered user.
-*/
+ *  version: 1.0.0
+ *  description: API url shortener for shortening of urls for a registered user.
+**/
 /**
  * 
  * @swagger

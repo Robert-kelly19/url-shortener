@@ -8,8 +8,9 @@ import authRouter from './routes/auth.js'
 import urlRouter from './routes/url.js'
 import redirectRouter from "./routes/redirect.js"
 import { fileURLToPath} from 'url';
-import swaggerUi from "swagger-ui-express"
-import swaggerSpec from './swaggerConfig.js';
+import cors from "cors"
+// import swaggerUi from "swagger-ui-express"
+// import swaggerSpec from './swaggerConfig.js';
 import winstonLogger from './utils/logger.js'
 
 const app = express();
@@ -24,13 +25,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors({
+    origin:'http://localhost:5173',
+  credentials: true 
+}));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/url', urlRouter);
 app.use('/redirect', redirectRouter);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
