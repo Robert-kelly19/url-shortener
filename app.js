@@ -21,14 +21,23 @@ const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
 app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({
-    origin:'http://localhost:5173',
-  credentials: true 
-}));
+const allowedOrigins = ['https://urlshortener-fe.vercel.app/', 'http://localhost:5173/'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+app.use(cors(corsOptions));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);

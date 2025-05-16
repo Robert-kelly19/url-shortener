@@ -1,9 +1,6 @@
 import { nanoid } from "nanoid";
 import { query } from "../config/db.js";
 
-const { BASE_URL } = process.env;
-
-
 export const shortenUrl = async (req, res, next) => {
   const { longUrl, customCode, expiresAt } = req.body;
   const userId = req.user.id;
@@ -37,7 +34,7 @@ export const shortenUrl = async (req, res, next) => {
 
     res.status(201).json({
       shortCode,
-      shortUrl: `${BASE_URL}/s/${shortCode}`,
+      shortUrl: `${req.protocol}://${req.get('host')}/redirect/${shortCode}`,
     });
   } catch (err) {
     next(err);

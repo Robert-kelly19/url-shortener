@@ -27,7 +27,7 @@ export default async function resgisterHandler(req,res,next) {
         return res.status(201).json({
             message: "new user successfully registered",
             userid: {
-                name:newuser.id
+                id:newuser.id
             }
         })
     } catch (error) {
