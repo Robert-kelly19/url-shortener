@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-const allowedOrigins = ['https://urlshortener-fe.vercel.app/', 'http://localhost:5173/'];
+const allowedOrigins = ['https://urlshortener-fe.vercel.app', 'http://localhost:5173'];
 
 const corsOptions = {
   origin: function (origin, callback) {
