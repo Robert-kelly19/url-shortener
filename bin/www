@@ -5,7 +5,6 @@
  */
 import dotenv from "dotenv"
 import app from '../app.js';
-import dotenv from 'dotenv';
 import deb from 'debug';
 import http from 'http';
 import logger from '../utils/logger.js';
