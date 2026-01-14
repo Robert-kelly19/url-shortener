@@ -3,7 +3,8 @@
 /**
  * Module dependencies.
  */
-import dotenv from "dotenv"
+
+import dotenv from 'dotenv'
 import app from '../app.js';
 import deb from 'debug';
 import http from 'http';
