@@ -7,8 +7,9 @@ import authRouter from './routes/auth.js'
 import urlRouter from './routes/url.js'
 import redirectRouter from "./routes/redirect.js"
 import { fileURLToPath} from 'url';
-import swaggerUi from "swagger-ui-express"
-import swaggerSpec from './swaggerConfig.js';
+import cors from "cors"
+// import swaggerUi from "swagger-ui-express"
+// import swaggerSpec from './swaggerConfig.js';
 import winstonLogger from './utils/logger.js'
 
 const app = express();
@@ -19,16 +20,28 @@ const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
 app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const allowedOrigins = ['https://urlshortener-fe.vercel.app', 'http://localhost:5173'];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+app.use(cors(corsOptions));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/url', urlRouter);
 app.use('/redirect', redirectRouter);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;

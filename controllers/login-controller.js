@@ -7,7 +7,7 @@ export default async function loginHandler(req, res, next) {
   const { email, password } = req.body
   try {
 
-    const findUserSQL = `SELECT id, email, first_name, last_name, password FROM users WHERE email = $1`
+    const findUserSQL = `SELECT id, email, password FROM users WHERE email = $1`
     const userResult = await query(findUserSQL, [email])
 
     if (userResult.rowCount === 0) {
@@ -42,8 +42,6 @@ export default async function loginHandler(req, res, next) {
           token: token,
           user: {
             id: user.id,
-            firstName: user.first_name,
-            lastName: user.last_name,
             email: user.email
           }
         })

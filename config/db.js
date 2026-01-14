@@ -8,7 +8,7 @@ const { Pool } = pg;
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT} = process.env;
 
-if (!DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_USER || !DB_PORT) {
+if (!DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_USER || !DB_PORT ) {
   logger.error(
     "Database environment variables are missing! Check your .env file."
   );
@@ -20,7 +20,6 @@ const pool = new Pool({
   database: DB_NAME,
   password: DB_PASSWORD,
   host: DB_HOST,
-  test_database: TEST_DB_NAME,
   port: parseInt(DB_PORT, 10),
   connectionTimeoutMillis: 2000,
 });
@@ -45,8 +44,6 @@ const initializeDbSchema = async () => {
         await client.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                first_name VARCHAR(50) NOT NULL,
-                last_name VARCHAR(50) NOT NULL,
                 email VARCHAR(255) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 created_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
