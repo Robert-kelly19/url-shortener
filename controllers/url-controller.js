@@ -49,7 +49,8 @@ export const getMyUrls = async (req, res, next) => {
       `
       SELECT short_code, long_url, created_at, expires_at, clicks 
       FROM url 
-      WHERE owner_id = $1 
+      WHERE owner_id = $1
+      AND (expires_at IS NULL OR expires_at > NOW())
       ORDER BY created_at DESC
       `,
       [userId]

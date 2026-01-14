@@ -24,12 +24,6 @@ const router= express.Router()
  *           schema:
  *             type: object
  *             properties:
- *               first_name:
- *                 type: string
- *                 example: "John"
- *               last_name:
- *                 type: string
- *                 example: "Doe"
  *               email:
  *                 type: string
  *                 format: email
