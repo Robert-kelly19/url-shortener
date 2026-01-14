@@ -4,13 +4,11 @@
  * Module dependencies.
  */
 import dotenv from "dotenv"
-dotenv.config()
 import app from '../app.js';
 import dotenv from 'dotenv';
 import deb from 'debug';
 import http from 'http';
 import logger from '../utils/logger.js';
-import { connectToDb, initializeDbSchema } from '../config/db.js';
 
 let debug = deb('url-shortener:server');
 dotenv.config();
