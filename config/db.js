@@ -38,8 +38,15 @@ pool.on("error", (err, client) => {
 const initializeDbSchema = async () => {
     const client = await pool.connect()
     try {
-        logger.info('initailing database schema...')
+        logger.info('initializing database schema...')
         await client.query("CREATE EXTENSION IF NOT EXISTS pgcrypto")
+
+        // Drop existing tables
+        logger.info('dropping existing tables...')
+        await client.query(`DROP TABLE IF EXISTS click_events CASCADE;`)
+        await client.query(`DROP TABLE IF EXISTS url CASCADE;`)
+        await client.query(`DROP TABLE IF EXISTS users CASCADE;`)
+        logger.info('tables dropped')
 
         await client.query(`
             CREATE TABLE IF NOT EXISTS users (
@@ -56,18 +63,33 @@ const initializeDbSchema = async () => {
                 CREATE TABLE IF NOT EXISTS url (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                short_code TEXT UNIQUE NOT NULL,
+                short_code TEXT NOT NULL,
                 long_url TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT NOW(),
                 expires_at TIMESTAMP,
-                clicks INT DEFAULT 0
+                clicks INT DEFAULT 0,
+                unique_visitors INT DEFAULT 0,
+                UNIQUE(owner_id, short_code)
+                );
+                `)
+
+            await client.query(`
+                CREATE TABLE IF NOT EXISTS click_events (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                url_id UUID NOT NULL REFERENCES url(id) ON DELETE CASCADE,
+                ip_address VARCHAR(45),
+                user_agent TEXT,
+                visited_at TIMESTAMP DEFAULT NOW(),
+                UNIQUE(url_id, ip_address, user_agent)
                 );
                 `)
 
                 logger.info("created url table")
+                logger.info("created click_events table")
 
             await client.query('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
             await client.query('CREATE INDEX IF NOT EXISTS idx_url_user_id ON url(owner_id)');
+            await client.query('CREATE INDEX IF NOT EXISTS idx_click_events_url_id ON click_events(url_id)');
 
             logger.info('Indexes have been ensured')
     } catch (error) {

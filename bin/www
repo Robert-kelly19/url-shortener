@@ -9,8 +9,9 @@ import app from '../app.js';
 import deb from 'debug';
 import http from 'http';
 import logger from '../utils/logger.js';
+import { connectToDb, initializeDbSchema } from '../config/db.js';
 
-let debug = deb('url-shortener:server');
+let debug = deb('url-shortener:server');g
 dotenv.config();
 
 /**
@@ -107,16 +108,15 @@ function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
-  logger.debug(`Server listening on: ${bind}`);
+  logger.debug(`Server listening on: http://localhost:${bind}`);
 }
 
 let startServer = async () => {
   try {
     logger.info(`Attempting to start server on port ${port}`);
     
-    // Temporary: Commenting out DB connections for troubleshooting
-    // await connectToDb();
-    // await initializeDbSchema();
+    await connectToDb();
+    await initializeDbSchema();
 
     logger.info(`Starting server on port ${port}`);
     server.listen(port, '0.0.0.0'); // Ensure it listens on all interfaces
