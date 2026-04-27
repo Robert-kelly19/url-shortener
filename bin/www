@@ -11,7 +11,7 @@ import http from 'http';
 import logger from '../utils/logger.js';
 import { connectToDb, initializeDbSchema } from '../config/db.js';
 
-let debug = deb('url-shortener:server');g
+let debug = deb('url-shortener:server');
 dotenv.config();
 
 /**
@@ -129,4 +129,4 @@ let startServer = async () => {
   }
 }
 
-startServer();
+await startServer();
